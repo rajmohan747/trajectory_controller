@@ -1,0 +1,6 @@
+#choose a controller
+#1 Control Law
+#2 Pure Pursuit
+controller: 
+  controller_type: 1
+#  controller_mode: 0

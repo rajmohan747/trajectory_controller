@@ -1,0 +1,6 @@
+float32 curvature
+float32 crossTrackError
+float32 orientationError
+geometry_msgs/Twist robotVel
+Control controlLaw
+float32 distanceToGoal

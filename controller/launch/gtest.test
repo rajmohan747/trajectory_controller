@@ -1,0 +1,3 @@
+<launch>
+	<test test-name="Unit-Tests" pkg="controller" type="initial_testings-test" name="JustAName"/>
+</launch>
