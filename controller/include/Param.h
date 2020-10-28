@@ -38,6 +38,7 @@ class Params
             double m_linearDeccLimit__m_s2;
             double m_angularAccLimit__rad_s2;
             double m_lateralAcceleration__m_s2;
+            double m_decelerationDistance__m;
 
         }robot;
         

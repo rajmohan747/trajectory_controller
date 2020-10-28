@@ -17,8 +17,24 @@ ControllerInterface::~ControllerInterface()
 {
 
 }
+
+/**
+* @brief  Control flow for the  LyapunovController
+*/
 void ControllerInterface::controlFlow()
 {
+
+    bool newGoalReceived = comparePose(m_goalPose,m_rosClass->getGoalPose());
+    if(newGoalReceived)
+    {
+        ROS_ERROR("ControllerInterface:: Reset parameters");
+        resetParameters();
+
+        // // Set the goalPose member variable, so that controller is only reset after receiving new goal
+        // m_goalPose = m_getVariables->getGoalPose();
+    }
+
+
     m_poseArray     = m_rosClass->getPath();
     m_odom          = m_rosClass->getOdom();
     m_robotPose     = m_rosClass->getRobotPose();
@@ -41,19 +57,58 @@ void ControllerInterface::controlFlow()
     }
    
 
-    bool plannerCondition = ((m_planSize > 0) && m_initialPlanReceived);
+    bool plannerCondition = ((m_planSize > 0) && m_initialPlanReceived && !m_controllerGoalReached);
         
     if (plannerCondition)
     {
         m_controller->initializeController(m_poseArray,m_robotPose, m_goalPose, m_odom,m_newPlanReceived);
-        m_lastPath       = m_currentPath;
+        m_lastPath               = m_currentPath;
+        m_cmdVel                 = m_controller->sendCommandVelocity();   
+        m_controllerGoalReached  = m_controller->isGoalReached();
     }
-
+    else
+    {    
+        stopVelocityCommand();
+        ROS_INFO_ONCE("ControllerInterface:: Reached goal or planner condition violated");
+    }
+    publishMessages();
 }
 
+/**
+* @brief  Resets the parameters for the ControllerInterface class
+*/
+void ControllerInterface::resetParameters()
+{
+    m_controllerGoalReached = false;
+    m_controller->resetControllerParameters();
+}
+
+/**
+* @brief  Compare two different positions
+* @param  two poses as geometry_msgs::Pose poseA and poseB
+* @returns True if two poses are different ,else return false
+*/
 bool ControllerInterface::comparePose(geometry_msgs::Pose poseA, geometry_msgs::Pose poseB)
 {
     return ((poseA.position.x != poseB.position.x) || (poseA.position.y != poseB.position.y) || (poseA.orientation.z != poseB.orientation.z) || (poseA.orientation.w != poseB.orientation.w));
+}
+
+/**
+* @brief  Resets the velocity commands 
+*/
+void ControllerInterface::stopVelocityCommand()
+{
+    m_cmdVel.linear.x      = 0.0;
+    m_cmdVel.angular.z     = 0.0;
+    ROS_INFO_ONCE("ControllerInterface:: Called stop command velocity");
+}
+
+/**
+* @brief  Sends the messages to the ROS class
+*/
+void ControllerInterface::publishMessages()
+{
+    m_rosClass->sendVelocityCmd(m_cmdVel);
 }
 /**
  * @brief Main function

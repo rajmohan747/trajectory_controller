@@ -61,6 +61,13 @@ public:
      * @returns boolean value indicating the current goal status
      */
     bool getGoalStatus();
+
+
+    /**
+     * @brief  Receives the velocity command from interface class for publishing
+     * @param m_cmd The message returned from a message notifier
+     */
+    void sendVelocityCmd(geometry_msgs::Twist m_cmd);
     
 private:
     /**
@@ -98,9 +105,10 @@ private:
     
     /**
      * @brief  A callback to obtain the current goal status from move base
-     * @param goal_msg The message returned from a message notifier
+     * @param msg The message returned from a message notifier
      */
     void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr& msg);
+
 
 
 

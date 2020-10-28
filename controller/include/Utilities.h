@@ -48,6 +48,27 @@ namespace Utilities
         return distance;
     }
 
+
+    /* @brief find the sign of the input
+    * @param data data whose sign is to check
+    * @return the multiplicative for sign
+    */
+    template<typename T>
+    int sign(T data)
+    {
+        int result = 0;
+        if(data > 0) {
+            result = 1;
+        } else if(data < 0) {
+            result = -1;
+        } else {
+            result = 0;
+        }
+        return result;
+    }
+
+
+    
     /**
      * @brief Returns time in microseconds
     */

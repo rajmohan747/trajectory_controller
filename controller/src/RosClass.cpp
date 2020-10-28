@@ -157,10 +157,10 @@ bool RosClass::getGoalStatus()
 
 /* Setter Functions */
 
-// void RosClass::sendVelocityCmd(geometry_msgs::Twist m_cmd)
-// {
-//     cmdVelPub.publish(m_cmd);
-// }
+void RosClass::sendVelocityCmd(geometry_msgs::Twist cmdVel)
+{
+    cmdVelPub.publish(cmdVel);
+}
 
 // void RosClass::sendStatus(std_msgs::Bool m_status)
 // {

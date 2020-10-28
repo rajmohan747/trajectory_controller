@@ -58,7 +58,8 @@ class Transformations
     */
     geometry_msgs::Quaternion slerp(geometry_msgs::Quaternion v0, geometry_msgs::Quaternion v1, double t);
 
-    
+    bool isValidQuaternion(const geometry_msgs::Pose &pose);
+
     private:
     // Message types
     geometry_msgs::PoseStamped poseSource, poseTarget ;

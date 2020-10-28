@@ -16,7 +16,7 @@ geometry_msgs::Pose Transformations::getTransformations(const std::string& sourc
     }
     catch(tf::TransformException& ex)
     {
-        ROS_ERROR("Computations:: Received an exception trying to transform a point : %s  %s  %s ", ex.what(),target_frame.c_str(),source_frame.c_str());
+        ROS_ERROR("Transformations:: Received an exception trying to transform a point : %s  %s  %s ", ex.what(),target_frame.c_str(),source_frame.c_str());
     }
 
     poseTransformed.position     = poseTarget.pose.position;
@@ -31,7 +31,16 @@ void Transformations::sendTransformations(const std::string& parent_frame,const 
     std::string parentFrame           = parent_frame;
     m_transform.setOrigin(tf::Vector3(inputPose.position.x,inputPose.position.y, 0.0) );
     m_transform.setRotation(tf::Quaternion(0.0, 0.0, inputPose.orientation.z, inputPose.orientation.w));          
-    m_broadcaster.sendTransform(tf::StampedTransform(m_transform, ros::Time(0),parentFrame, targetFrame)); 
+    
+
+    try
+    {
+        m_broadcaster.sendTransform(tf::StampedTransform(m_transform, ros::Time(0),parentFrame, targetFrame)); 
+    }
+    catch(...)
+    {
+        ROS_ERROR("sendTransformations:: Received an exception trying to transform a point : %f %f %f %f ", inputPose.position.x,inputPose.position.y,inputPose.orientation.z,inputPose.orientation.w);
+    }
 }
 
 // ToDo: need to be removed from here
@@ -129,4 +138,21 @@ geometry_msgs::Quaternion Transformations::slerp(geometry_msgs::Quaternion v0, g
     return result;
     
 
+}
+
+/**
+* @brief  Checks if given Pose is having a valid quaternion
+* @return true if quaternion is valid,else false
+*/
+bool Transformations::isValidQuaternion(const geometry_msgs::Pose &pose)
+{
+    double orientationX = pose.orientation.x;
+    double orientationY = pose.orientation.y;
+    double orientationZ = pose.orientation.z;
+    double orientationW = pose.orientation.w;
+    double quaternionValue = (orientationX* orientationX) + (orientationY* orientationY) + (orientationW* orientationW) + (orientationZ* orientationZ);
+
+    bool quatValidity    = (quaternionValue > 0.99) ? true: false;
+
+    return quatValidity;
 }

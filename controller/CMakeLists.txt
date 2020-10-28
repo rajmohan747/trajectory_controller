@@ -46,16 +46,7 @@ include_directories(
 )
 
 
-add_executable(tracking_controller
-  src/RosClass.cpp
-  src/LyapunovController.cpp 
-  src/Transformations.cpp
-  src/ControllerInterface.cpp
-)
 
-
-
-add_dependencies(tracking_controller ${PROJECT_NAME}_gencfg)
 
 
 add_library(initial_testings
@@ -65,13 +56,24 @@ add_library(initial_testings
 target_link_libraries(initial_testings ${catkin_LIBRARIES})
 
 
+  
+
+
+add_executable(tracking_controller
+  src/RosClass.cpp
+  src/LyapunovController.cpp 
+  src/Transformations.cpp
+  src/ControllerInterface.cpp
+)
+add_dependencies(tracking_controller ${PROJECT_NAME}_gencfg)
+
 #For matplotlib 
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 target_link_libraries(tracking_controller
   ${catkin_LIBRARIES} ${PYTHON_LIBRARIES}
 )
-#target_link_libraries(trajectory_controller )
+
 
 
 

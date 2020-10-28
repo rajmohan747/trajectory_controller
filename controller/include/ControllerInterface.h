@@ -29,15 +29,22 @@ class ControllerInterface
          
     private:
     
+
+
+        void stopVelocityCommand();   
+        void publishMessages();
+        void resetParameters();     
+
         bool comparePose(geometry_msgs::Pose poseA, geometry_msgs::Pose poseB);
 
         geometry_msgs::PoseArray m_poseArray;
         geometry_msgs::Pose m_robotPose,m_goalPose;
         geometry_msgs::Pose m_currentPath,m_lastPath;
-        geometry_msgs::Twist m_odom;
+        geometry_msgs::Twist m_odom,m_cmdVel;
 
         bool m_newPlanReceived      = false;
         bool m_initialPlanReceived  = false;
+        bool m_controllerGoalReached= false;
         
         int m_planSize   =  0;
         std::unique_ptr<RosClass> m_rosClass;
